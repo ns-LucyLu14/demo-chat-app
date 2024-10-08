@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --background: #E2F1E7;
+    --secondaryBackground: #73c1a7;
+    --primaryHover: #387478;
+    --secondaryHover: #629584;
+    --primaryText: #243642;
+    --secondaryText: #E2F1E7;
+    --tertiaryText: #4d4d4d;
+    --invertedPrimaryText: #ffffff;
+    --invertedTertiaryText: #b3b3b3;
+}
+
+[data-theme="dark"] {
+    --background: #243642;
+    --secondaryBackground: #387478;
+    --primaryHover: #629584;
+    --secondaryHover: #387478;
+    --primaryText: #E2F1E7;
+    --secondaryText: #243642;
+    --tertiaryText: #b3b3b3;
+    --invertedPrimaryText: #000000;
+    --invertedTertiaryText: #595959;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--primaryText);
+}
+
+.scrollbar-w-2::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.25rem;
+}
+
+.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+    --bg-opacity: 1;
+    background-color: #f7fafc;
+    background-color: rgba(247, 250, 252, var(--bg-opacity));
+}
+
+.scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+    --bg-opacity: 1;
+    background-color: #edf2f7;
+    background-color: rgba(237, 242, 247, var(--bg-opacity));
+}
+
+.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+    border-radius: 0.25rem;
+}

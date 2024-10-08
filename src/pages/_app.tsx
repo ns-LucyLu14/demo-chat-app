@@ -2,6 +2,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
+import { ThemeProvider } from "next-themes";
 
 import { api } from "~/utils/api";
 
@@ -19,11 +20,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
     return isDashboardRoute ? <DashboardLayout>{page}</DashboardLayout> : page;
   };
   return (
-    <SessionProvider session={session}>
-      <div className={GeistSans.className}>
-        {getLayout(<Component {...pageProps} />)}
-      </div>
-    </SessionProvider>
+    <ThemeProvider defaultTheme="light">
+      <SessionProvider session={session}>
+        <div className={GeistSans.className}>
+          {getLayout(<Component {...pageProps} />)}
+        </div>
+      </SessionProvider>
+    </ThemeProvider>
   );
 };
 
