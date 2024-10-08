@@ -7,14 +7,17 @@ type DashboardPageProps = {};
 
 const DashboardPage = (props: DashboardPageProps) => {
   return (
-    <div className="text-7xl">
-      <div>Dashboard</div>
-      <Link
-        href={"/api/auth/signout"}
-        className="border-primaryText bg-background hover:border-secondaryText hover:bg-primaryHover hover:text-secondaryText flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium transition hover:text-indigo-600"
-      >
-        Sign out
-      </Link>
+    <div className="flex flex-col items-center gap-10 px-5 py-10">
+      <h1 className="text-5xl font-bold">Chat App Home Page</h1>
+      <p>
+        Send message to{" "}
+        <span className="text-lg font-semibold text-blue-600">friend</span> or
+        make a new{" "}
+        <span className="text-lg font-semibold text-green-600">
+          friend request
+        </span>{" "}
+        to open a new chat!
+      </p>
     </div>
   );
 };
