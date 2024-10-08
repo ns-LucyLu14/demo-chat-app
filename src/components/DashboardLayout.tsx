@@ -15,7 +15,22 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const { data: sessionData } = useSession();
   const { theme, setTheme } = useTheme();
+
   const changeUserThemeMutation = api.user.changeUserTheme.useMutation();
+  const {
+    data: connectedUsers,
+    // isLoading,
+    // isError,
+  } = api.chat.connectedUsers.useQuery();
+
+  //   if (isLoading) {
+  //     return <div>Loading chats...</div>;
+  //   }
+
+  //   if (isError || !connectedUsers) {
+  //     return <div>Failed to load chats</div>;
+  //   }
+
   const changeTheme = () => {
     changeUserThemeMutation.mutate(
       {
@@ -47,42 +62,42 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     }
   }, [sessionData]);
 
-  const chats = [
-    {
-      userId: "user_1",
-      conversationId: "conv_2",
-      name: "Charlie Brown",
-      username: "charlieb",
-      conversation: {
-        id: "conv_2",
-        lastMessageId: "msg_4",
-        createdAt: "2024-10-07T11:00:00Z",
-        messages: [
-          {
-            id: "msg_3",
-            messageText: "Charlie, did you finish the report?",
-            userId: "user_1",
-            conversationId: "conv_2",
-            createdAt: "2024-10-07T11:01:00Z",
-          },
-          {
-            id: "msg_4",
-            messageText: "Yeah, I sent it earlier today.",
-            userId: "user_3",
-            conversationId: "conv_2",
-            createdAt: "2024-10-07T11:02:00Z",
-          },
-        ],
-        lastMessage: {
-          id: "msg_4",
-          messageText: "Yeah, I sent it earlier today.",
-          userId: "user_3",
-          conversationId: "conv_2",
-          createdAt: "2024-10-07T11:02:00Z",
-        },
-      },
-    },
-  ];
+  //   const chats = [
+  //     {
+  //       userId: "user_1",
+  //       conversationId: "conv_2",
+  //       name: "Charlie Brown",
+  //       username: "charlieb",
+  //       conversation: {
+  //         id: "conv_2",
+  //         lastMessageId: "msg_4",
+  //         createdAt: "2024-10-07T11:00:00Z",
+  //         messages: [
+  //           {
+  //             id: "msg_3",
+  //             messageText: "Charlie, did you finish the report?",
+  //             userId: "user_1",
+  //             conversationId: "conv_2",
+  //             createdAt: "2024-10-07T11:01:00Z",
+  //           },
+  //           {
+  //             id: "msg_4",
+  //             messageText: "Yeah, I sent it earlier today.",
+  //             userId: "user_3",
+  //             conversationId: "conv_2",
+  //             createdAt: "2024-10-07T11:02:00Z",
+  //           },
+  //         ],
+  //         lastMessage: {
+  //           id: "msg_4",
+  //           messageText: "Yeah, I sent it earlier today.",
+  //           userId: "user_3",
+  //           conversationId: "conv_2",
+  //           createdAt: "2024-10-07T11:02:00Z",
+  //         },
+  //       },
+  //     },
+  //   ];
 
   //   if (!sessionData) notFound();
   return (
@@ -100,14 +115,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="mb-2 flex flex-1 flex-col gap-y-3">
-            {chats.map((chat, index) => {
+            {connectedUsers?.map((user) => {
               return (
-                <li key={index}>
+                <li key={user.id}>
                   <Link
-                    href={`/dashboard/chat/${chat.conversationId}`}
+                    href={`/dashboard/chat/${user.id}`}
                     className="text-primaryText hover:border-primaryHover hover:bg-primaryHover hover:text-secondaryText flex rounded-md p-1 font-semibold transition hover:cursor-pointer"
                   >
-                    {chat.name}
+                    {user.name}
                   </Link>
                 </li>
               );

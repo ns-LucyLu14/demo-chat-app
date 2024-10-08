@@ -8,7 +8,7 @@ const AddPage = (props: AddPageProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [input, setInput] = useState<string>("");
 
-  const createUserMutation = api.user.create.useMutation();
+  const connectUserMutation = api.chat.connectUser.useMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -21,18 +21,19 @@ const AddPage = (props: AddPageProps) => {
       return alert("Please enter a name or username.");
     }
 
-    const newUser = await createUserMutation.mutateAsync({
-      name: "TestCall",
-      username: input,
-    });
+    try {
+      // Call the connectUser mutation
+      const newConnection = await connectUserMutation.mutateAsync({
+        username: input,
+      });
 
-    if (newUser) {
-      alert("User created");
-    } else {
-      alert("error while creating");
+      if (newConnection) {
+        alert("Connected successfully!");
+      }
+    } catch (error: any) {
+      alert(`Error: ${error.message}`);
     }
-
-    return newUser;
+    setInput("");
   };
   return (
     <main className="px-6 pt-8">
