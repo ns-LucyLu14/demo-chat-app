@@ -2,9 +2,9 @@ import React, { useRef, useState } from "react";
 import Button from "~/components/Button";
 import { api } from "~/utils/api";
 
-type Props = {};
+type AddPageProps = {};
 
-const Add = (props: Props) => {
+const AddPage = (props: AddPageProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [input, setInput] = useState<string>("");
 
@@ -63,4 +63,4 @@ const Add = (props: Props) => {
   );
 };
 
-export default Add;
+export default AddPage;

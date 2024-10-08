@@ -3,21 +3,20 @@
 import Link from "next/link";
 import React from "react";
 
-type Props = {};
+type DashboardPageProps = {};
 
-const Home = (props: Props) => {
+const DashboardPage = (props: DashboardPageProps) => {
   return (
-    <div className="text-7xl text-red-500">
-      <div>Home</div>
+    <div className="text-7xl">
+      <div>Dashboard</div>
       <Link
         href={"/api/auth/signout"}
         className="border-primaryText bg-background hover:border-secondaryText hover:bg-primaryHover hover:text-secondaryText flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium transition hover:text-indigo-600"
       >
-        {/* <TbLogout className="h-5 w-5" /> */}
         Sign out
       </Link>
     </div>
   );
 };
 
-export default Home;
+export default DashboardPage;
