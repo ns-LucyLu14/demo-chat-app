@@ -12,6 +12,9 @@
     --tertiaryText: #4d4d4d;
     --invertedPrimaryText: #ffffff;
     --invertedTertiaryText: #b3b3b3;
+    --crazyBackground: #E44CED;
+    --crazyPrimaryText: #F1E8F3;
+    --crazySecondaryText: #0ee4a8;
 }
 
 [data-theme="dark"] {
@@ -24,6 +27,9 @@
     --tertiaryText: #b3b3b3;
     --invertedPrimaryText: #000000;
     --invertedTertiaryText: #595959;
+    --crazyBackground: #fb3636;
+    --crazyPrimaryText: #d98cbd;
+    --crazySecondaryText: #e736cf;
 }
 
 body {

@@ -32,22 +32,28 @@ const Messages = ({ messages, currentUserId }: MessagesProps) => {
         messages.map((message) => (
           <div
             key={message.id}
-            className={`dark flex min-w-56 max-w-sm flex-col flex-wrap rounded-md bg-secondaryBackground p-4 ${message.userId === currentUserId ? "sm:self-end" : "sm:self-start"}`}
+            className={`dark flex min-w-56 max-w-sm flex-col flex-wrap rounded-md ${message.crazy ? "bg-crazyBackground" : "bg-secondaryBackground"} p-4 ${message.userId === currentUserId ? "sm:self-end" : "sm:self-start"}`}
           >
-            <div className="text-sm text-primaryText underline">
+            <div
+              className={`${message.crazy ? "text-crazySecondaryText" : "text-primaryText"} text-sm font-semibold`}
+            >
               {message.user.username}
             </div>
 
             <div className="flex flex-grow flex-col justify-between">
-              <div className="text-testText pt-2 text-sm text-secondaryText">
+              <div
+                className={`${message.crazy ? "text-crazyPrimaryText" : "text-secondaryText"} text-sm`}
+              >
                 {message.messageText}
               </div>
-              <span className="ml-auto text-xs text-tertiaryText">
+              <span
+                className={`ml-auto pt-1 text-xs ${message.crazy ? "text-crazySecondaryText" : "text-tertiaryText"}`}
+              >
                 {new Date(message.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
-              </span>{" "}
+              </span>
             </div>
           </div>
         ))
