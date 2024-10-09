@@ -1,3 +1,4 @@
+import { observable } from "@trpc/server/observable";
 import { z } from "zod";
 
 import {
@@ -7,6 +8,38 @@ import {
 } from "~/server/api/trpc";
 
 export const chatRouter = createTRPCRouter({
+  // delete if not needed
+  conversations: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.conversationUser.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      include: {
+        conversation: {
+          include: {
+            conversationUsers: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                    username: true,
+                  },
+                },
+              },
+            },
+            lastMessage: true,
+          },
+        },
+      },
+      orderBy: {
+        conversation: {
+          lastMessageId: "desc",
+        },
+      },
+    });
+  }),
   findConversation: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ input: { userId }, ctx }) => {
@@ -139,6 +172,11 @@ export const chatRouter = createTRPCRouter({
               },
             });
 
+            // ctx.ee.emit("sendMessage", {
+            //   conversationId: conversation.id,
+            //   userId,
+            // });
+
             return conversation;
           });
         }
@@ -183,6 +221,8 @@ export const chatRouter = createTRPCRouter({
             userId: true,
           },
         });
+
+        // ctx.ee.emit("sendMessage", { conversationId, userId: user!.userId });
       },
     ),
 
@@ -280,6 +320,24 @@ export const chatRouter = createTRPCRouter({
         image: connectedUser.image,
         username: connectedUser.username,
         conversationId: conversation.conversation.id, // Add conversationId here
+      };
+    });
+  }),
+
+  onSendMessage: protectedProcedure.subscription(({ ctx }) => {
+    return observable<{ conversationId: string }>((emit) => {
+      const onSendMessage = (data: {
+        conversationId: string;
+        userId: string;
+      }) => {
+        if (data.userId === ctx.session.user.id) {
+          emit.next({ conversationId: data.conversationId });
+        }
+      };
+      ctx.ee.on("sendMessage", onSendMessage);
+
+      return () => {
+        ctx.ee.off("sendMessage", onSendMessage);
       };
     });
   }),

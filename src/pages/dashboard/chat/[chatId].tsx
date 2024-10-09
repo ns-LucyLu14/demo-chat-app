@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import ChatInput from "~/components/ChatInput";
 import Messages from "~/components/Messages";
+import { createTRPCContext } from "~/server/api/trpc";
 import { api } from "~/utils/api";
 
 interface PageProps {
@@ -14,7 +15,15 @@ interface PageProps {
 const Chat = ({ params }: PageProps) => {
   const { data: sessionData } = useSession();
   const router = useRouter();
+  const utils = api.useUtils();
+
   const conversationId = router.query.chatId as string;
+  // api.chat.onSendMessage.useSubscription(undefined, {
+  //   onData: ({ conversationId }) => {
+  //     utils.chat.converations.invalidate();
+  //     utils.chat.messages.invalidate({ conversationId });
+  //   },
+  // });
 
   const {
     data: messages,

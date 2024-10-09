@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useRef, useState } from "react";
 import Button from "~/components/Button";
 import { api } from "~/utils/api";
@@ -7,6 +8,7 @@ type AddPageProps = {};
 const AddPage = (props: AddPageProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [input, setInput] = useState<string>("");
+  const utils = api.useUtils();
 
   const {
     data: searchUser,
@@ -35,6 +37,8 @@ const AddPage = (props: AddPageProps) => {
 
       if (newConnection) {
         alert("Connected successfully!");
+
+        await utils.chat.connectedUsers.invalidate();
       }
     } catch (error: any) {
       alert(`Error: ${error.message}`);
