@@ -1,9 +1,18 @@
 import React, { useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import Button from "./Button";
+import { api } from "~/utils/api";
+
+type ChatPartner = {
+  id: string;
+  username: string | null;
+  name: string | null;
+  image: string | null;
+} | null;
 
 type ChatInputProps = {
-  chatPartner: string;
+  chatPartner: ChatPartner;
+  conversationId: string;
 };
 
 const replaceIcons = {
@@ -11,10 +20,30 @@ const replaceIcons = {
   wink: "😉",
 };
 
-const ChatInput = ({ chatPartner }: ChatInputProps) => {
+const ChatInput = ({ chatPartner, conversationId }: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [input, setInput] = useState<string>("");
-  const sendMessage = () => {};
+  const sendMessageMutation = api.chat.sendMessage.useMutation();
+  const sendMessage = () => {
+    if (!input.trim()) return;
+
+    sendMessageMutation.mutate(
+      {
+        conversationId: conversationId,
+        messageText: input,
+        userId: chatPartner?.id,
+      },
+      {
+        onSuccess: () => {
+          setInput("");
+          textareaRef.current?.focus();
+        },
+        onError: (error) => {
+          console.error("Failed to send message:", error.message);
+        },
+      },
+    );
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = e.target.value;
@@ -36,13 +65,13 @@ const ChatInput = ({ chatPartner }: ChatInputProps) => {
           rows={1}
           value={input}
           onChange={handleChange}
-          placeholder={`Send a message to ${chatPartner}...`}
+          placeholder={`Send a message to ${chatPartner?.name}...`}
           className="block w-full resize-none border-0 bg-transparent text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:p-1.5 sm:text-sm sm:leading-6"
         />
       </div>
       <div className="absolute bottom-0 right-0 flex justify-between px-4 py-4">
         <div className="flex-shrink-0">
-          <Button title="Send" />
+          <Button onClick={sendMessage} title="Send" />
         </div>
       </div>
     </div>

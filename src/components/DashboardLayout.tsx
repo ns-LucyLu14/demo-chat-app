@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import React, { useEffect } from "react";
 import { FiMoon } from "react-icons/fi";
 import { MdOutlineAddBox, MdOutlineConnectedTv } from "react-icons/md";
+import { LuPlusCircle } from "react-icons/lu";
+import { BsSun } from "react-icons/bs";
 import { TbLogout } from "react-icons/tb";
 import { api } from "~/utils/api";
 
@@ -61,43 +63,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       }
     }
   }, [sessionData]);
-
-  //   const chats = [
-  //     {
-  //       userId: "user_1",
-  //       conversationId: "conv_2",
-  //       name: "Charlie Brown",
-  //       username: "charlieb",
-  //       conversation: {
-  //         id: "conv_2",
-  //         lastMessageId: "msg_4",
-  //         createdAt: "2024-10-07T11:00:00Z",
-  //         messages: [
-  //           {
-  //             id: "msg_3",
-  //             messageText: "Charlie, did you finish the report?",
-  //             userId: "user_1",
-  //             conversationId: "conv_2",
-  //             createdAt: "2024-10-07T11:01:00Z",
-  //           },
-  //           {
-  //             id: "msg_4",
-  //             messageText: "Yeah, I sent it earlier today.",
-  //             userId: "user_3",
-  //             conversationId: "conv_2",
-  //             createdAt: "2024-10-07T11:02:00Z",
-  //           },
-  //         ],
-  //         lastMessage: {
-  //           id: "msg_4",
-  //           messageText: "Yeah, I sent it earlier today.",
-  //           userId: "user_3",
-  //           conversationId: "conv_2",
-  //           createdAt: "2024-10-07T11:02:00Z",
-  //         },
-  //       },
-  //     },
-  //   ];
 
   //   if (!sessionData) notFound();
   return (

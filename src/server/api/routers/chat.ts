@@ -7,6 +7,94 @@ import {
 } from "~/server/api/trpc";
 
 export const chatRouter = createTRPCRouter({
+  findConversation: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input: { userId }, ctx }) => {
+      const conversationUsers = await ctx.db.conversationUser.groupBy({
+        by: ["conversationId"],
+        where: {
+          userId: {
+            in: [userId, ctx.session.user.id],
+          },
+        },
+        having: {
+          userId: {
+            _count: {
+              equals: 2,
+            },
+          },
+        },
+      });
+
+      return conversationUsers.length
+        ? conversationUsers[0]?.conversationId
+        : null;
+    }),
+  getChatPartner: protectedProcedure
+    .input(z.object({ conversationId: z.string() }))
+    .query(async ({ input: { conversationId }, ctx }) => {
+      // Ensure the current user is part of the conversation
+      await ctx.db.conversationUser.findUniqueOrThrow({
+        where: {
+          userId_conversationId: {
+            userId: ctx.session.user.id,
+            conversationId,
+          },
+        },
+      });
+
+      const chatPartner = await ctx.db.conversationUser.findFirst({
+        where: {
+          conversationId,
+          userId: {
+            not: {
+              equals: ctx.session.user.id,
+            },
+          },
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              username: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      return chatPartner?.user ?? null;
+    }),
+
+  messages: protectedProcedure
+    .input(z.object({ conversationId: z.string() }))
+    .query(async ({ input: { conversationId }, ctx }) => {
+      await ctx.db.conversationUser.findUniqueOrThrow({
+        where: {
+          userId_conversationId: {
+            userId: ctx.session.user.id,
+            conversationId,
+          },
+        },
+      });
+      return ctx.db.message.findMany({
+        where: {
+          conversationId,
+        },
+        orderBy: {
+          id: "desc",
+        },
+        include: {
+          user: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      });
+    }),
+
   sendMessage: protectedProcedure
     .input(
       z.object({
