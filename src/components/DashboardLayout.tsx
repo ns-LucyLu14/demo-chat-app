@@ -102,14 +102,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   //   if (!sessionData) notFound();
   return (
     <div className="flex h-screen w-full">
-      <div className="border-secondaryBackground bg-secondaryBackground flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r px-6">
+      <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-secondaryBackground bg-secondaryBackground px-6">
         <Link
           href={"/dashboard"}
           className="flex h-16 shrink-0 items-center font-semibold"
         >
           <MdOutlineConnectedTv className="mr-2 h-10 w-10" /> Domagoj Chat App
         </Link>
-        <div className="text-secondaryText text-xs font-semibold leading-6">
+        <div className="text-xs font-semibold leading-6 text-secondaryText">
           Your chats
         </div>
 
@@ -119,8 +119,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               return (
                 <li key={user.id}>
                   <Link
-                    href={`/dashboard/chat/${user.id}`}
-                    className="text-primaryText hover:border-primaryHover hover:bg-primaryHover hover:text-secondaryText flex rounded-md p-1 font-semibold transition hover:cursor-pointer"
+                    href={`/dashboard/chat/${user.conversationId}`}
+                    className="flex rounded-md p-1 font-semibold text-primaryText transition hover:cursor-pointer hover:border-primaryHover hover:bg-primaryHover hover:text-secondaryText"
                   >
                     {user.name}
                   </Link>
@@ -128,7 +128,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               );
             })}
             <li>
-              <div className="text-secondaryText mt-4 text-xs font-semibold leading-6">
+              <div className="mt-4 text-xs font-semibold leading-6 text-secondaryText">
                 Overview
               </div>
 
@@ -136,9 +136,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <li>
                   <Link
                     href={"/dashboard/add"}
-                    className="hover:bg-primaryHover hover:text-secondaryText group flex gap-3 rounded-md p-2 text-sm font-semibold leading-6 transition"
+                    className="group flex gap-3 rounded-md p-2 text-sm font-semibold leading-6 transition hover:bg-primaryHover hover:text-secondaryText"
                   >
-                    <span className="border-primaryText bg-background text-primaryText group-hover:border-secondaryText group-hover:bg-primaryHover group-hover:text-secondaryText flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-primaryText bg-background text-[0.625rem] font-medium text-primaryText group-hover:border-secondaryText group-hover:bg-primaryHover group-hover:text-secondaryText">
                       <MdOutlineAddBox className="h-4 w-4" />
                     </span>
                     Add friend
@@ -149,7 +149,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <li className="-mx-6 mt-auto flex items-center justify-between px-2">
               <div
                 onClick={changeTheme}
-                className="border-primaryText bg-background text-primaryText hover:border-secondaryText hover:bg-primaryHover hover:text-secondaryText flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium transition hover:cursor-pointer"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primaryText bg-background text-[0.625rem] font-medium text-primaryText transition hover:cursor-pointer hover:border-secondaryText hover:bg-primaryHover hover:text-secondaryText"
               >
                 <FiMoon className="h-5 w-5" />
               </div>
@@ -159,7 +159,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
               <Link
                 href={"/api/auth/signout"}
-                className="border-primaryText bg-background hover:border-secondaryText hover:bg-primaryHover hover:text-secondaryText flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium transition hover:text-indigo-600"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primaryText bg-background text-[0.625rem] font-medium transition hover:border-secondaryText hover:bg-primaryHover hover:text-indigo-600 hover:text-secondaryText"
               >
                 <TbLogout className="h-5 w-5" />
               </Link>

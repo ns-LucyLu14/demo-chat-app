@@ -184,9 +184,16 @@ export const chatRouter = createTRPCRouter({
     });
 
     // Return the list of connected users
-    return conversations.map(
-      (conversation) => conversation.conversation.conversationUsers[0].user,
-    );
+    return conversations.map((conversation) => {
+      const connectedUser = conversation.conversation.conversationUsers[0].user;
+      return {
+        id: connectedUser.id,
+        name: connectedUser.name,
+        image: connectedUser.image,
+        username: connectedUser.username,
+        conversationId: conversation.conversation.id, // Add conversationId here
+      };
+    });
   }),
 
   getSecretMessage: protectedProcedure.query(() => {
