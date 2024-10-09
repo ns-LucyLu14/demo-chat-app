@@ -7,6 +7,9 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
+const currentlyTyping: Record<string, { lastTyped: Date; userId: string }> =
+  Object.create(null);
+
 export const chatRouter = createTRPCRouter({
   // delete if not needed
   conversations: protectedProcedure.query(({ ctx }) => {
@@ -345,6 +348,64 @@ export const chatRouter = createTRPCRouter({
 
       return () => {
         ctx.ee.off("sendMessage", onSendMessage);
+      };
+    });
+  }),
+
+  isTyping: protectedProcedure
+    .input(z.object({ typing: z.boolean(), userId: z.string() }))
+    .mutation(({ ctx, input }) => {
+      if (input.userId === ctx.session.user.id) {
+        console.log("hello");
+        return;
+      }
+      const username = ctx.session.user.username;
+
+      // every 1s, clear old "isTyping"
+      const interval = setInterval(() => {
+        let updated = false;
+        const now = Date.now();
+        for (const [key, value] of Object.entries(currentlyTyping)) {
+          if (now - value.lastTyped.getTime() > 3e3) {
+            delete currentlyTyping[key];
+            updated = true;
+          }
+        }
+        if (updated) {
+          ctx.ee.emit("isTypingUpdate");
+        }
+      }, 3e3);
+      process.on("SIGTERM", () => {
+        clearInterval(interval);
+      });
+      if (!input.typing) {
+        delete currentlyTyping[username];
+      } else {
+        currentlyTyping[username] = {
+          lastTyped: new Date(),
+          userId: input.userId,
+        };
+      }
+      ctx.ee.emit("isTypingUpdate");
+    }),
+
+  whoIsTyping: publicProcedure.subscription(({ ctx }) => {
+    let prev: string[] | null = null;
+    return observable<string[]>((emit) => {
+      const onIsTypingUpdate = () => {
+        const newData = Object.keys(currentlyTyping).filter(
+          (username) =>
+            currentlyTyping[username]?.userId === ctx.session?.user.id,
+        );
+
+        if (!prev || prev.toString() !== newData.toString()) {
+          emit.next(newData);
+        }
+        prev = newData;
+      };
+      ctx.ee.on("isTypingUpdate", onIsTypingUpdate);
+      return () => {
+        ctx.ee.off("isTypingUpdate", onIsTypingUpdate);
       };
     });
   }),

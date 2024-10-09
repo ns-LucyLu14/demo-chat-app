@@ -32,6 +32,8 @@ const ChatInput = ({
   const sendMessageMutation = api.chat.sendMessage.useMutation();
   const changeUserNicknameMutation = api.user.changeUserNickname.useMutation();
 
+  const isTyping = api.chat.isTyping.useMutation();
+
   const sendMessage = () => {
     if (!input.trim()) return;
 
@@ -83,6 +85,7 @@ const ChatInput = ({
         onSuccess: () => {
           setInput("");
           textareaRef.current?.focus();
+          isTyping.mutate({ typing: false, userId: chatPartner!.id });
           handleRefetchMessages();
         },
         onError: (error) => {
@@ -97,6 +100,7 @@ const ChatInput = ({
     value = value.replace(/(:\))/g, replaceIcons.smiley);
     value = value.replace(/(;\))/g, replaceIcons.wink);
     setInput(value);
+    isTyping.mutate({ typing: true, userId: chatPartner!.id });
   };
   return (
     <div className="border-t border-gray-200 p-4 px-2 sm:mb-0">
@@ -112,6 +116,9 @@ const ChatInput = ({
           rows={1}
           value={input}
           onChange={handleChange}
+          onBlur={() =>
+            isTyping.mutate({ typing: false, userId: chatPartner!.id })
+          }
           placeholder={`Send a message to ${chatPartner?.name}...`}
           className="block w-full resize-none border-0 bg-transparent text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:p-1.5 sm:text-sm sm:leading-6"
         />

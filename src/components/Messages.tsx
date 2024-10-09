@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { api } from "~/utils/api";
 
 interface User {
   username: string | null;
@@ -22,12 +23,22 @@ interface MessagesProps {
 const Messages = ({ messages, currentUserId }: MessagesProps) => {
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
 
+  const [currentlyTyping, setCurrentlyTyping] = useState<string[]>([]);
+  api.chat.whoIsTyping.useSubscription(undefined, {
+    onData: (data) => {
+      setCurrentlyTyping(data);
+    },
+  });
+
   return (
     <div
       id="messages"
       className={`scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch relative flex h-full flex-1 flex-col-reverse gap-4 overflow-y-auto p-3`}
     >
       <div ref={scrollDownRef} />
+      {!!currentlyTyping.length && (
+        <div className="self-end rounded-lg bg-gray-300/50 px-1.5 py-0.5 text-sm">{`${currentlyTyping} is typing...`}</div>
+      )}
       {messages.length ? (
         messages.map((message) => (
           <div
