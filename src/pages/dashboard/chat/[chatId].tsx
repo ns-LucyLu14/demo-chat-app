@@ -18,13 +18,6 @@ const Chat = ({ params }: PageProps) => {
   const utils = api.useUtils();
 
   const conversationId = router.query.chatId as string;
-  // api.chat.onSendMessage.useSubscription(undefined, {
-  //   onData: ({ conversationId }) => {
-  //     utils.chat.converations.invalidate();
-  //     utils.chat.messages.invalidate({ conversationId });
-  //   },
-  // });
-
   const {
     data: messages,
     // isLoading: loadingMessages,
@@ -49,6 +42,17 @@ const Chat = ({ params }: PageProps) => {
   //   if (loadingConversationId || loadingMessages) {
   //     return <div>Loading...</div>;
   //   }
+
+  api.chat.onSendMessage.useSubscription(undefined, {
+    onData: () => {
+      void refetchMessages();
+      // utils.chat.converations.invalidate();
+      // void utils.chat.messages.invalidate({ conversationId });
+      console.log("send message event---");
+
+      // Refetch messages when a new message is sent
+    },
+  });
 
   if (
     errorFetchingChatPartner ||

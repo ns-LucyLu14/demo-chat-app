@@ -172,10 +172,10 @@ export const chatRouter = createTRPCRouter({
               },
             });
 
-            // ctx.ee.emit("sendMessage", {
-            //   conversationId: conversation.id,
-            //   userId,
-            // });
+            ctx.ee.emit("sendMessage", {
+              conversationId: conversation.id,
+              userId,
+            });
 
             return conversation;
           });
@@ -222,7 +222,7 @@ export const chatRouter = createTRPCRouter({
           },
         });
 
-        // ctx.ee.emit("sendMessage", { conversationId, userId: user!.userId });
+        ctx.ee.emit("sendMessage", { conversationId, userId: user!.userId });
       },
     ),
 
