@@ -92,6 +92,7 @@ export const chatRouter = createTRPCRouter({
               name: true,
               username: true,
               image: true,
+              nickname: true,
             },
           },
         },

@@ -1,3 +1,4 @@
+import { observable } from "@trpc/server/observable";
 import { z } from "zod";
 
 import {
@@ -44,6 +45,43 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+
+  changeUserNickname: protectedProcedure
+    .input(z.object({ nickname: z.string() }))
+    .mutation(async ({ input: { nickname }, ctx }) => {
+      await ctx.db.$transaction(async (trx) => {
+        await trx.user.update({
+          data: {
+            nickname,
+          },
+          where: {
+            id: ctx.session.user.id,
+          },
+        });
+      });
+
+      ctx.ee.emit("changeNickname", {
+        nickname,
+        userId: ctx.session.user.id,
+      });
+
+      return nickname;
+    }),
+
+  onChangeUserNickname: protectedProcedure.subscription(({ ctx }) => {
+    return observable<{ nickname: string }>((emit) => {
+      const onChangeNickname = (data: { nickname: string; userId: string }) => {
+        if (data.userId !== ctx.session.user.id) {
+          emit.next({ nickname: data.nickname });
+        }
+      };
+      ctx.ee.on("changeNickname", onChangeNickname);
+
+      return () => {
+        ctx.ee.off("changeNickname", onChangeNickname);
+      };
+    });
+  }),
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";

@@ -2,6 +2,7 @@ import EventEmitter from "events";
 
 interface MyEvents {
   sendMessage: (data: { conversationId: string; userId: string }) => void;
+  changeNickname: (data: { nickname: string; userId: string }) => void;
   //   isTypingUpdate: () => void;
 }
 declare interface MyEventEmitter {

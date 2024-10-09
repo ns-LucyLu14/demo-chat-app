@@ -34,6 +34,7 @@ const Chat = ({ params }: PageProps) => {
     data: chatPartner,
     // isLoading: loadingChatPartner,
     error: errorFetchingChatPartner,
+    refetch: refetchChatPartner,
   } = api.chat.getChatPartner.useQuery(
     { conversationId },
     { enabled: !!conversationId },
@@ -45,12 +46,13 @@ const Chat = ({ params }: PageProps) => {
 
   api.chat.onSendMessage.useSubscription(undefined, {
     onData: () => {
-      void refetchMessages();
-      // utils.chat.converations.invalidate();
-      // void utils.chat.messages.invalidate({ conversationId });
-      console.log("send message event---");
+      refetchMessages();
+    },
+  });
 
-      // Refetch messages when a new message is sent
+  api.user.onChangeUserNickname.useSubscription(undefined, {
+    onData: () => {
+      refetchChatPartner();
     },
   });
 
@@ -76,7 +78,7 @@ const Chat = ({ params }: PageProps) => {
                   </span>
                 </div>
                 <span className="text-sm text-gray-600">
-                  Chat partner email
+                  {chatPartner.nickname}
                 </span>
               </div>
             </div>

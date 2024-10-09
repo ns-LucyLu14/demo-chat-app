@@ -8,6 +8,7 @@ type ChatPartner = {
   username: string | null;
   name: string | null;
   image: string | null;
+  nickname: string | null;
 } | null;
 
 type ChatInputProps = {
@@ -29,18 +30,54 @@ const ChatInput = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [input, setInput] = useState<string>("");
   const sendMessageMutation = api.chat.sendMessage.useMutation();
+  const changeUserNicknameMutation = api.user.changeUserNickname.useMutation();
 
   const sendMessage = () => {
     if (!input.trim()) return;
 
-    const crazy = /^\/think\b/.test(input.trim());
+    const isNicknameCommand = /^\/nickname\b/.test(input.trim());
+
+    if (isNicknameCommand) {
+      const parts = input.trim().split(/^\/nickname\s+/);
+      const newNickname = parts[1]?.trim();
+      if (newNickname) {
+        changeUserNicknameMutation.mutate(
+          {
+            nickname: newNickname,
+          },
+          {
+            onSuccess: () => {
+              setInput("");
+              textareaRef.current?.focus();
+            },
+            onError: (error) => {
+              console.error("Failed to send message:", error.message);
+            },
+          },
+        );
+      }
+
+      return;
+    }
+
+    let messagePart = input;
+
+    const isThinkCommand = /^\/think\b/.test(input.trim());
+
+    if (isThinkCommand) {
+      const parts = input.trim().split(/^\/think\s+/);
+      const crazyMessage = parts[1]?.trim();
+      if (crazyMessage) {
+        messagePart = crazyMessage;
+      }
+    }
 
     sendMessageMutation.mutate(
       {
         conversationId: conversationId,
-        messageText: input,
+        messageText: messagePart,
         userId: chatPartner?.id,
-        crazy: crazy,
+        crazy: isThinkCommand,
       },
       {
         onSuccess: () => {
