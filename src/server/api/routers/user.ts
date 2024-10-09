@@ -8,7 +8,7 @@ import {
 
 export const userRouter = createTRPCRouter({
   findOne: protectedProcedure
-    .input(z.object({ username: z.string().min(1) }))
+    .input(z.object({ username: z.string().nullable() }))
     .query(({ input, ctx }) => {
       return ctx.db.user.findFirst({
         where: { username: input.username },

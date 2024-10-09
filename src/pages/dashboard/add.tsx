@@ -8,6 +8,12 @@ const AddPage = (props: AddPageProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [input, setInput] = useState<string>("");
 
+  const {
+    data: searchUser,
+    // isLoading,
+    // isError,
+  } = api.user.findOne.useQuery({ username: input });
+
   const connectUserMutation = api.chat.connectUser.useMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,10 +60,24 @@ const AddPage = (props: AddPageProps) => {
             ref={inputRef}
             value={input}
             onChange={handleChange}
-            className="text-primaryText focus:ring-primaryText block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+            className="block w-full rounded-md border-0 p-1.5 text-primaryText shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primaryText sm:text-sm sm:leading-6"
             placeholder="Enter Name or Username"
           />
           <Button title="Add" />
+        </div>
+
+        <div
+          className="mt-10 flex w-[40%] items-center justify-start"
+          onClick={handleSubmit}
+        >
+          <div
+            className={`${searchUser ? "w-full rounded-md bg-secondaryBackground py-3 pl-3 text-primaryText hover:cursor-pointer hover:bg-primaryHover hover:text-secondaryText" : "py-3 pl-2 text-primaryText"}`}
+          >
+            {searchUser ? searchUser.name : "No user found..."}
+            {searchUser && (
+              <small className="block">{`Username: ${searchUser.username}`}</small>
+            )}
+          </div>
         </div>
       </form>
     </main>
