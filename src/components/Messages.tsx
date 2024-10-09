@@ -25,10 +25,10 @@ const Messages = ({ messages, currentUserId }: MessagesProps) => {
   return (
     <div
       id="messages"
-      className={`scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch flex h-full flex-1 flex-col-reverse gap-4 overflow-y-auto p-3`}
+      className={`scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch relative flex h-full flex-1 flex-col-reverse gap-4 overflow-y-auto p-3`}
     >
       <div ref={scrollDownRef} />
-      {messages ? (
+      {messages.length ? (
         messages.map((message) => (
           <div
             key={message.id}
@@ -52,9 +52,13 @@ const Messages = ({ messages, currentUserId }: MessagesProps) => {
           </div>
         ))
       ) : (
-        <div>
-          <p>Start a conversation by sending a message</p>
-          <p>{"Don't be shy, be the one who initiates contact"}</p>
+        <div className="absolute left-0 right-0 top-0 p-10 text-center">
+          <p className="text-tertiaryText sm:text-xl md:text-2xl lg:text-4xl">
+            📨 Start a conversation by sending a message 📨
+          </p>
+          <p className="mt-5 text-xl text-tertiaryText opacity-80">
+            ...why be shy, be the one who initiates the first contact...
+          </p>
         </div>
       )}
     </div>
