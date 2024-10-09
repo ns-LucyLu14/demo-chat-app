@@ -33,11 +33,14 @@ const ChatInput = ({
   const sendMessage = () => {
     if (!input.trim()) return;
 
+    const crazy = /^\/think\b/.test(input.trim());
+
     sendMessageMutation.mutate(
       {
         conversationId: conversationId,
         messageText: input,
         userId: chatPartner?.id,
+        crazy: crazy,
       },
       {
         onSuccess: () => {

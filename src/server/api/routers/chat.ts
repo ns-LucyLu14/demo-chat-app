@@ -134,10 +134,14 @@ export const chatRouter = createTRPCRouter({
         conversationId: z.string().nullish(),
         messageText: z.string(),
         userId: z.string().nullish(),
+        crazy: z.boolean(),
       }),
     )
     .mutation(
-      async ({ input: { messageText, conversationId, userId }, ctx }) => {
+      async ({
+        input: { messageText, conversationId, userId, crazy },
+        ctx,
+      }) => {
         if (!conversationId) {
           if (!userId) {
             throw new Error("No recipient passed");
@@ -150,6 +154,7 @@ export const chatRouter = createTRPCRouter({
                   create: {
                     messageText,
                     userId: ctx.session.user.id,
+                    crazy,
                   },
                 },
                 conversationUsers: {
@@ -188,6 +193,7 @@ export const chatRouter = createTRPCRouter({
                 messageText,
                 userId: ctx.session.user.id,
                 conversationId,
+                crazy,
               },
             }),
             trx.conversationUser.findUniqueOrThrow({
