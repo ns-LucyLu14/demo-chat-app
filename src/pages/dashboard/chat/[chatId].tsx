@@ -20,6 +20,7 @@ const Chat = ({ params }: PageProps) => {
     data: messages,
     // isLoading: loadingMessages,
     error: errorFetchingMessages,
+    refetch: refetchMessages,
   } = api.chat.messages.useQuery(
     { conversationId },
     {
@@ -72,6 +73,7 @@ const Chat = ({ params }: PageProps) => {
           <ChatInput
             chatPartner={chatPartner}
             conversationId={conversationId}
+            handleRefetchMessages={refetchMessages}
           />
         </div>
       )}

@@ -13,6 +13,7 @@ type ChatPartner = {
 type ChatInputProps = {
   chatPartner: ChatPartner;
   conversationId: string;
+  handleRefetchMessages: () => void;
 };
 
 const replaceIcons = {
@@ -20,7 +21,11 @@ const replaceIcons = {
   wink: "😉",
 };
 
-const ChatInput = ({ chatPartner, conversationId }: ChatInputProps) => {
+const ChatInput = ({
+  chatPartner,
+  conversationId,
+  handleRefetchMessages,
+}: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [input, setInput] = useState<string>("");
   const sendMessageMutation = api.chat.sendMessage.useMutation();
@@ -37,6 +42,7 @@ const ChatInput = ({ chatPartner, conversationId }: ChatInputProps) => {
         onSuccess: () => {
           setInput("");
           textareaRef.current?.focus();
+          handleRefetchMessages();
         },
         onError: (error) => {
           console.error("Failed to send message:", error.message);
