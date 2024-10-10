@@ -410,6 +410,16 @@ export const chatRouter = createTRPCRouter({
     });
   }),
 
+  delete: protectedProcedure
+    .input(z.object({ messageId: z.string() }))
+    .mutation(async ({ input: { messageId }, ctx }) => {
+      return ctx.db.message.delete({
+        where: {
+          id: messageId,
+        },
+      });
+    }),
+
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),

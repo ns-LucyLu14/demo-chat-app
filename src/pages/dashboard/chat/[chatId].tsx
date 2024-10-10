@@ -89,6 +89,11 @@ const Chat = ({ params }: PageProps) => {
             chatPartner={chatPartner}
             conversationId={conversationId}
             handleRefetchMessages={refetchMessages}
+            lastMessage={
+              messages.filter(
+                (message) => message.userId === sessionData?.user.id,
+              )[0]
+            }
           />
         </div>
       )}

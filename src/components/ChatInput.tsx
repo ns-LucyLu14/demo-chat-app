@@ -11,10 +11,25 @@ type ChatPartner = {
   nickname: string | null;
 } | null;
 
+interface User {
+  username: string | null;
+}
+
+interface Message {
+  id: string;
+  userId: string;
+  conversationId: string;
+  messageText: string;
+  createdAt: Date;
+  crazy: boolean | null;
+  user: User;
+}
+
 type ChatInputProps = {
   chatPartner: ChatPartner;
   conversationId: string;
   handleRefetchMessages: () => void;
+  lastMessage: Message;
 };
 
 const replaceIcons = {
@@ -26,16 +41,36 @@ const ChatInput = ({
   chatPartner,
   conversationId,
   handleRefetchMessages,
+  lastMessage,
 }: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [input, setInput] = useState<string>("");
   const sendMessageMutation = api.chat.sendMessage.useMutation();
   const changeUserNicknameMutation = api.user.changeUserNickname.useMutation();
+  const deleteMessageMutation = api.chat.delete.useMutation();
 
   const isTyping = api.chat.isTyping.useMutation();
 
   const sendMessage = () => {
     if (!input.trim()) return;
+
+    const isDeleteCommand = /^\/oops\b/.test(input.trim());
+
+    if (isDeleteCommand) {
+      deleteMessageMutation.mutate(
+        {
+          messageId: lastMessage.id,
+        },
+        {
+          onSuccess: () => {
+            setInput("");
+            textareaRef.current?.focus();
+            handleRefetchMessages();
+          },
+        },
+      );
+      return;
+    }
 
     const isNicknameCommand = /^\/nickname\b/.test(input.trim());
 
