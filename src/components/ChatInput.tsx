@@ -48,6 +48,7 @@ const ChatInput = ({
   const sendMessageMutation = api.chat.sendMessage.useMutation();
   const changeUserNicknameMutation = api.user.changeUserNickname.useMutation();
   const deleteMessageMutation = api.chat.delete.useMutation();
+  const updateMessageMutation = api.chat.update.useMutation();
 
   const isTyping = api.chat.isTyping.useMutation();
 
@@ -60,15 +61,43 @@ const ChatInput = ({
       deleteMessageMutation.mutate(
         {
           messageId: lastMessage.id,
+          userId: chatPartner!.id,
         },
         {
           onSuccess: () => {
             setInput("");
             textareaRef.current?.focus();
+            isTyping.mutate({ typing: false, userId: chatPartner!.id });
             handleRefetchMessages();
           },
         },
       );
+      return;
+    }
+
+    const isEditCommand = /^\/edit\b/.test(input.trim());
+
+    if (isEditCommand) {
+      const parts = input.trim().split(/^\/edit\s+/);
+      const newMessageText = parts[1]?.trim();
+      if (newMessageText) {
+        updateMessageMutation.mutate(
+          {
+            messageId: lastMessage.id,
+            newMessageText: newMessageText,
+            userId: chatPartner!.id,
+          },
+          {
+            onSuccess: () => {
+              setInput("");
+              textareaRef.current?.focus();
+              isTyping.mutate({ typing: false, userId: chatPartner!.id });
+              handleRefetchMessages();
+            },
+          },
+        );
+      }
+
       return;
     }
 
@@ -86,6 +115,7 @@ const ChatInput = ({
             onSuccess: () => {
               setInput("");
               textareaRef.current?.focus();
+              isTyping.mutate({ typing: false, userId: chatPartner!.id });
             },
             onError: (error) => {
               console.error("Failed to send message:", error.message);

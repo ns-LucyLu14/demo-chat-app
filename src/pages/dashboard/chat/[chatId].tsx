@@ -46,22 +46,21 @@ const Chat = ({ params }: PageProps) => {
 
   api.chat.onSendMessage.useSubscription(undefined, {
     onData: (data) => {
-      refetchMessages();
-
-      const isMessageFromOtherUser =
-        data.conversationId === conversationId &&
-        chatPartner?.id !== sessionData?.user.id;
-
-      if (isMessageFromOtherUser) {
-        const notification = new Audio("/audio/tap-notification.mp3");
-        notification.play();
-      }
+      const isMessageFromOtherUser = refetchMessages();
+      const notification = new Audio("/audio/tap-notification.mp3");
+      notification.play();
     },
   });
 
   api.user.onChangeUserNickname.useSubscription(undefined, {
     onData: () => {
       refetchChatPartner();
+    },
+  });
+
+  api.chat.onDelete.useSubscription(undefined, {
+    onData: () => {
+      refetchMessages();
     },
   });
 

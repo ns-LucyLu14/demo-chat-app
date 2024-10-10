@@ -411,14 +411,76 @@ export const chatRouter = createTRPCRouter({
   }),
 
   delete: protectedProcedure
-    .input(z.object({ messageId: z.string() }))
-    .mutation(async ({ input: { messageId }, ctx }) => {
-      return ctx.db.message.delete({
+    .input(z.object({ messageId: z.string(), userId: z.string() }))
+    .mutation(async ({ input: { messageId, userId }, ctx }) => {
+      const deletedMessage = await ctx.db.message.delete({
         where: {
           id: messageId,
         },
       });
+
+      ctx.ee.emit("deleteMessage", { userId });
+
+      return deletedMessage;
     }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        messageId: z.string(),
+        newMessageText: z.string().min(1),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ input: { messageId, newMessageText, userId }, ctx }) => {
+      const message = await ctx.db.message.findUnique({
+        where: {
+          id: messageId,
+        },
+        select: {
+          userId: true, // Ensure we get the userId to check ownership
+        },
+      });
+
+      if (!message) {
+        throw new Error("Message not found");
+      }
+
+      if (message.userId !== ctx.session.user.id) {
+        throw new Error("You are not authorized to update this message");
+      }
+
+      const updatedMessage = await ctx.db.message.update({
+        where: {
+          id: messageId,
+        },
+        data: {
+          messageText: newMessageText,
+        },
+      });
+
+      ctx.ee.emit("sendMessage", {
+        conversationId: updatedMessage.conversationId,
+        userId,
+      });
+
+      return updatedMessage;
+    }),
+
+  onDelete: protectedProcedure.subscription(({ ctx }) => {
+    return observable<{ userId: string }>((emit) => {
+      const onDelete = (data: { userId: string }) => {
+        if (data.userId === ctx.session.user.id) {
+          emit.next({ userId: data.userId });
+        }
+      };
+      ctx.ee.on("deleteMessage", onDelete);
+
+      return () => {
+        ctx.ee.off("deleteMessage", onDelete);
+      };
+    });
+  }),
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
