@@ -83,6 +83,16 @@ export const userRouter = createTRPCRouter({
     });
   }),
 
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.user.findMany({
+      where: {
+        NOT: {
+          id: ctx.session.user.id,
+        },
+      },
+    });
+  }),
+
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
