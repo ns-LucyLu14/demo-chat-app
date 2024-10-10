@@ -45,8 +45,17 @@ const Chat = ({ params }: PageProps) => {
   //   }
 
   api.chat.onSendMessage.useSubscription(undefined, {
-    onData: () => {
+    onData: (data) => {
       refetchMessages();
+
+      const isMessageFromOtherUser =
+        data.conversationId === conversationId &&
+        chatPartner?.id !== sessionData?.user.id;
+
+      if (isMessageFromOtherUser) {
+        const notification = new Audio("/audio/tap-notification.mp3");
+        notification.play();
+      }
     },
   });
 
