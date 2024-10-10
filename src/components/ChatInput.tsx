@@ -101,10 +101,10 @@ const ChatInput = ({
       return;
     }
 
-    const isNicknameCommand = /^\/nickname\b/.test(input.trim());
+    const isNicknameCommand = /^\/nick\b/.test(input.trim());
 
     if (isNicknameCommand) {
-      const parts = input.trim().split(/^\/nickname\s+/);
+      const parts = input.trim().split(/^\/nick\s+/);
       const newNickname = parts[1]?.trim();
       if (newNickname) {
         changeUserNicknameMutation.mutate(

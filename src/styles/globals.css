@@ -15,6 +15,7 @@
     --crazyBackground: #E44CED;
     --crazyPrimaryText: #F1E8F3;
     --crazySecondaryText: #0ee4a8;
+    /* --gradient: bg-gradient-to-b from-[#2e026d] to-[#15162c */
 }
 
 [data-theme="dark"] {

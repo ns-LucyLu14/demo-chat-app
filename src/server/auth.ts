@@ -25,6 +25,7 @@ declare module "next-auth" {
       name: string;
       username: string;
       theme: string;
+      nickname: string;
       // ...other properties
       // role: UserRole;
     };
@@ -94,13 +95,14 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       // Include user.id, user.username, and user.name in the session
       if (session?.user) {
         session.user.id = token.sub; // User ID is in the token's subject
         session.user.username = token.username as string; // Pass username from token
         session.user.name = token.name as string; // Pass name from token
-        session.user.theme = token.theme as string; // Pass name from token
+        session.user.theme = token.theme as string; // Pass theme from token
+        session.user.nickname = token.nickname as string; // Pass nickname from token
       }
       return session;
     },
@@ -110,6 +112,7 @@ export const authOptions: NextAuthOptions = {
         token.username = user.username;
         token.name = user.name;
         token.theme = user.theme;
+        token.nickname = user.nickname;
       }
       return token;
     },
