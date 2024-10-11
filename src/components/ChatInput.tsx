@@ -3,6 +3,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import Button from "./Button";
 import { api } from "~/utils/api";
 import { useTheme } from "next-themes";
+import { FiSend } from "react-icons/fi";
 
 type ChatPartner = {
   id: string;
@@ -212,8 +213,8 @@ const ChatInput = ({
     isTyping.mutate({ typing: true, userId: chatPartner!.id });
   };
   return (
-    <div className="border-t border-gray-200 p-4 px-2 sm:mb-0">
-      <div className="relative flex-1 overflow-hidden rounded-lg shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+    <div className="border-t border-secondaryBackground p-4 px-2 sm:mb-0">
+      <div className="relative flex flex-1 overflow-hidden rounded-lg shadow-sm ring-1 ring-inset ring-secondaryBackground">
         <TextareaAutosize
           ref={textareaRef}
           onKeyDown={(e) => {
@@ -229,12 +230,14 @@ const ChatInput = ({
             isTyping.mutate({ typing: false, userId: chatPartner!.id })
           }
           placeholder={`Send a message to ${chatPartner?.name}...`}
-          className="block w-full resize-none border-0 bg-transparent text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:p-1.5 sm:text-sm sm:leading-6"
+          className="block w-full resize-none border-0 bg-transparent text-primaryText placeholder:text-gray-400 sm:p-1.5 sm:text-sm sm:leading-6"
         />
       </div>
-      <div className="absolute bottom-0 right-0 flex justify-between px-4 py-4">
-        <div className="flex-shrink-0">
-          <Button onClick={sendMessage} title="Send" />
+      <div className="flex justify-between">
+        <div className="absolute bottom-0 right-0 mb-2 mr-2 flex-shrink-0">
+          <Button onClick={sendMessage} title="Send">
+            <FiSend className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </div>

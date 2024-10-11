@@ -1,18 +1,20 @@
 import React from "react";
+import { IconType } from "react-icons/lib";
 
 type ButtonProps = {
   title: string;
   onClick?: () => void;
+  children?: any;
 };
 
-const Button = ({ title, onClick }: ButtonProps) => {
+const Button = ({ title, onClick, children }: ButtonProps) => {
   return (
     <button
       onClick={onClick ? onClick : undefined}
       type="submit"
-      className="bg-secondaryBackground text-primaryText hover:bg-primaryHover hover:text-secondaryText rounded-md px-5 py-3 font-semibold no-underline transition"
+      className="flex items-center gap-2 rounded-md bg-secondaryBackground px-5 py-3 font-semibold text-primaryText no-underline transition hover:bg-primaryHover hover:text-secondaryText"
     >
-      {title}
+      {title} {children}
     </button>
   );
 };

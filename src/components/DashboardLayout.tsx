@@ -21,9 +21,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const changeUserThemeMutation = api.user.changeUserTheme.useMutation();
   const {
     data: connectedUsers,
+    refetch: refetchConnectedUsers,
     // isLoading,
     // isError,
   } = api.chat.connectedUsers.useQuery();
+
+  api.chat.onConnectUser.useSubscription(undefined, {
+    onData: () => {
+      refetchConnectedUsers();
+    },
+  });
 
   //   if (isLoading) {
   //     return <div>Loading chats...</div>;
@@ -119,7 +126,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 >
                   <FiMoon className="h-5 w-5" />
                 </div>
-                <div className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-700">
+                <div className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-primaryText">
                   Username: {sessionData?.user.username}
                 </div>
 

@@ -11,6 +11,7 @@ interface MyEvents {
     countdownTime: number;
     countdownUrl: string;
   }) => void;
+  connectUser: (data: { userId: string }) => void;
 }
 declare interface MyEventEmitter {
   on<TEv extends keyof MyEvents>(event: TEv, listener: MyEvents[TEv]): this;

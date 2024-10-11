@@ -305,6 +305,8 @@ export const chatRouter = createTRPCRouter({
         },
       });
 
+      ctx.ee.emit("connectUser", { userId: userToConnect.id });
+
       return newConversation;
     }),
 
@@ -522,6 +524,21 @@ export const chatRouter = createTRPCRouter({
         };
       },
     );
+  }),
+
+  onConnectUser: protectedProcedure.subscription(({ ctx }) => {
+    return observable<{ userId: string }>((emit) => {
+      const onConnectUser = (data: { userId: string }) => {
+        if (data.userId === ctx.session.user.id) {
+          emit.next({ userId: data.userId });
+        }
+      };
+      ctx.ee.on("connectUser", onConnectUser);
+
+      return () => {
+        ctx.ee.off("connectUser", onConnectUser);
+      };
+    });
   }),
 
   getSecretMessage: protectedProcedure.query(() => {

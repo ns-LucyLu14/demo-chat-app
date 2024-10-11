@@ -63,6 +63,28 @@ export const authOptions: NextAuthOptions = {
         // Destructure the credentials
         const { name, username } = credentials ?? {};
 
+        // Add two dummy users to first user of app
+        const userCount = await db.user.count();
+
+        if (userCount === 0) {
+          await db.user.createMany({
+            data: [
+              {
+                name: "Dummy User 1",
+                username: "dummyuser1",
+                email: null,
+                theme: "light",
+              },
+              {
+                name: "Dummy User 2",
+                username: "dummyuser2",
+                email: null,
+                theme: "light",
+              },
+            ],
+          });
+        }
+
         // Check for existing user in the database
         const existingUser = await db.user.findUnique({
           where: { username: username },

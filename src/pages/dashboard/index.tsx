@@ -12,11 +12,9 @@ const DashboardPage = (props: DashboardPageProps) => {
       <p>
         Send message to{" "}
         <span className="text-lg font-semibold text-blue-600">friend</span> or
-        make a new{" "}
-        <span className="text-lg font-semibold text-green-600">
-          friend request
-        </span>{" "}
-        to open a new chat!
+        add a new{" "}
+        <span className="text-lg font-semibold text-green-600">friend</span> to
+        open a new chat!
       </p>
     </div>
   );

@@ -131,17 +131,17 @@ const Chat = ({ params }: PageProps) => {
               Countdown: {countdown} seconds
             </div>
           )}
-          <div className="flex justify-between border-b-2 border-gray-200 py-3 sm:items-center">
+          <div className="flex justify-between border-b-2 border-secondaryBackground py-3 sm:items-center">
             <div className="relative flex items-center space-x-4">
               <div className="relative"></div>
               <div className="flex flex-col leading-tight">
                 <div className="flex items-center text-xl">
-                  <span className="mr-3 font-semibold text-gray-700">
+                  <span className="mr-3 font-semibold text-primaryText">
                     {chatPartner.name}
                   </span>
                 </div>
-                <span className="text-sm text-gray-600">
-                  {chatPartner.nickname}
+                <span className="text-sm text-primaryText">
+                  {`nickname: ${chatPartner.nickname}`}
                 </span>
               </div>
             </div>
