@@ -11,8 +11,8 @@ To run this app on your local machine, first you need to clone this repository t
 ```
 mkdir your-folder-name
 cd your-folder-name
-git clone https://github.com/ns-LucyLu14/chat-app-project.git
-cd chat-app-project
+git clone https://github.com/ns-LucyLu14/demo-chat-app.git
+cd demo-chat-app
 ```
 
 We will be using Node Version Manager version 18 and yarn for this project. Please make sure you have `nvm` and `yarn` installed on your machine before you run the following command
