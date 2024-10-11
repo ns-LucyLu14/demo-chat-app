@@ -1,17 +1,59 @@
-# Create T3 App
+# Chat App Project - Powered by T3 stack
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Welcome to my personal Chat App demo project (work in progress...)
 
-## What's next? How do I make an app with this?
+This is a [T3 Stack](https://create.t3.gg/) powered app bootstrapped with `create-t3-app`.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## How to get started
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+To run this app on your local machine, first you need to clone this repository to your machine.
+
+```
+mkdir your-folder-name
+cd your-folder-name
+git clone https://github.com/ns-LucyLu14/chat-app-project.git
+cd chat-app-project
+```
+
+We will be using Node Version Manager version 18 and yarn for this project. Please make sure you have `nvm` and `yarn` installed on your machine before you run the following command
+
+```
+nvm use 18
+```
+
+Run install command to install dependencies
+
+```
+yarn
+```
+
+Setup environment variables
+
+```
+cp .env.example .env
+```
+
+Setup Prisma database for local development
+
+```
+yarn db:push
+```
+
+Run the app
+
+```
+yarn dev
+```
+
+Visit `http://localhost:3000` on your browser and enjoy! 🔥
+
+## Chat App Stack
+
+If you are not familiar with the different technologies used in this project, please refer to the respective docs.
 
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 
@@ -23,7 +65,3 @@ To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the fo
 - [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
 
 You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
