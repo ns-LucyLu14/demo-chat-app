@@ -5,6 +5,12 @@ interface MyEvents {
   changeNickname: (data: { nickname: string; userId: string }) => void;
   deleteMessage: (data: { userId: string }) => void;
   isTypingUpdate: () => void;
+  countdown: (data: {
+    conversationId: string;
+    userId: string;
+    countdownTime: number;
+    countdownUrl: string;
+  }) => void;
 }
 declare interface MyEventEmitter {
   on<TEv extends keyof MyEvents>(event: TEv, listener: MyEvents[TEv]): this;

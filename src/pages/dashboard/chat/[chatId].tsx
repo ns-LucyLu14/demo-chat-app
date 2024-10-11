@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ChatInput from "~/components/ChatInput";
 import Messages from "~/components/Messages";
 import { createTRPCContext } from "~/server/api/trpc";
@@ -17,6 +17,45 @@ const Chat = ({ params }: PageProps) => {
   const { data: sessionData } = useSession();
   const router = useRouter();
   const utils = api.useUtils();
+
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [countdownUrl, setCountdownUrl] = useState<string | null>(null);
+
+  api.chat.onCountdown.useSubscription(undefined, {
+    onData: (data) => {
+      setCountdown(data.countdownTime);
+      setCountdownUrl(data.countdownUrl);
+    },
+  });
+
+  useEffect(() => {
+    let countdownInterval: NodeJS.Timeout;
+
+    if (countdown !== null && countdown > 0) {
+      countdownInterval = setInterval(() => {
+        setCountdown((prevCountdown) => {
+          if (prevCountdown && prevCountdown > 0) {
+            return prevCountdown - 1;
+          }
+          return prevCountdown;
+        });
+      }, 1000);
+    }
+
+    if (countdown === 0 && countdownUrl) {
+      // Open the URL when countdown is complete
+      router.push(countdownUrl);
+
+      setCountdown(null); // Reset countdown
+      setCountdownUrl(null); // Reset URL
+    }
+
+    return () => {
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+    };
+  }, [countdown, countdownUrl]);
 
   const conversationId = router.query.chatId as string;
   const {
@@ -86,6 +125,12 @@ const Chat = ({ params }: PageProps) => {
       </Head>
       {chatPartner && conversationId && (
         <div className="flex h-full max-h-[calc(100vh-4rem)] flex-1 flex-col justify-between">
+          {/* Countdown display */}
+          {countdown !== null && countdown > 0 && (
+            <div className="py-2 text-center text-lg text-red-600">
+              Countdown: {countdown} seconds
+            </div>
+          )}
           <div className="flex justify-between border-b-2 border-gray-200 py-3 sm:items-center">
             <div className="relative flex items-center space-x-4">
               <div className="relative"></div>

@@ -146,6 +146,23 @@ export const chatRouter = createTRPCRouter({
         input: { messageText, conversationId, userId, crazy },
         ctx,
       }) => {
+        // countdown logic
+        const countdownRegex = /^\/countdown\s+(\d+)\s+(https?:\/\/[^\s]+)/;
+        const countdownMatch = messageText.match(countdownRegex);
+
+        if (countdownMatch) {
+          const countdownTime = parseInt(countdownMatch[1] as string, 10); // countdown time in seconds
+          const countdownUrl = countdownMatch[2] as string; // url to open
+
+          ctx.ee.emit("countdown", {
+            conversationId: conversationId as string,
+            userId: userId as string, // recipient user
+            countdownTime,
+            countdownUrl,
+          });
+
+          return;
+        }
         if (!conversationId) {
           if (!userId) {
             throw new Error("No recipient passed");
@@ -480,6 +497,31 @@ export const chatRouter = createTRPCRouter({
         ctx.ee.off("deleteMessage", onDelete);
       };
     });
+  }),
+
+  onCountdown: protectedProcedure.subscription(({ ctx }) => {
+    return observable<{ countdownTime: number; countdownUrl: string }>(
+      (emit) => {
+        const onCountdown = (data: {
+          conversationId: string;
+          userId: string;
+          countdownTime: number;
+          countdownUrl: string;
+        }) => {
+          if (data.userId === ctx.session.user.id) {
+            emit.next({
+              countdownTime: data.countdownTime,
+              countdownUrl: data.countdownUrl,
+            });
+          }
+        };
+        ctx.ee.on("countdown", onCountdown);
+
+        return () => {
+          ctx.ee.off("countdown", onCountdown);
+        };
+      },
+    );
   }),
 
   getSecretMessage: protectedProcedure.query(() => {

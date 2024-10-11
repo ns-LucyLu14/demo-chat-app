@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import Button from "./Button";
 import { api } from "~/utils/api";
+import { useTheme } from "next-themes";
 
 type ChatPartner = {
   id: string;
@@ -45,15 +46,58 @@ const ChatInput = ({
 }: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [input, setInput] = useState<string>("");
+  const { setTheme } = useTheme();
   const sendMessageMutation = api.chat.sendMessage.useMutation();
   const changeUserNicknameMutation = api.user.changeUserNickname.useMutation();
   const deleteMessageMutation = api.chat.delete.useMutation();
   const updateMessageMutation = api.chat.update.useMutation();
 
+  const changeUserThemeMutation = api.user.changeUserTheme.useMutation();
+
   const isTyping = api.chat.isTyping.useMutation();
 
   const sendMessage = () => {
     if (!input.trim()) return;
+
+    const isLightCommand = /^\/light\b/.test(input.trim());
+
+    if (isLightCommand) {
+      changeUserThemeMutation.mutate(
+        {
+          theme: "light",
+        },
+        {
+          onSuccess: () => {
+            setInput("");
+            textareaRef.current?.focus();
+            isTyping.mutate({ typing: false, userId: chatPartner!.id });
+            setTheme("light");
+          },
+        },
+      );
+
+      return;
+    }
+
+    const isDarkCommand = /^\/dark\b/.test(input.trim());
+
+    if (isDarkCommand) {
+      changeUserThemeMutation.mutate(
+        {
+          theme: "dark",
+        },
+        {
+          onSuccess: () => {
+            setInput("");
+            textareaRef.current?.focus();
+            isTyping.mutate({ typing: false, userId: chatPartner!.id });
+            setTheme("dark");
+          },
+        },
+      );
+
+      return;
+    }
 
     const isDeleteCommand = /^\/oops\b/.test(input.trim());
 
